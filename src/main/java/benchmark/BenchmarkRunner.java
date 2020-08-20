@@ -31,7 +31,7 @@ public class BenchmarkRunner {
         Stream
                 .iterate(0, i -> i + 1)
                 .limit(solverFactoryConfigured.iterations)
-                .forEach(i -> solverFactoryConfigured.solverFactoryCS.buildSolver());
+                .forEach(i -> solverFactoryConfigured.solverFactoryCs.buildSolver());
     }
 
     @Benchmark
@@ -45,15 +45,15 @@ public class BenchmarkRunner {
     @State(Scope.Benchmark)
     public static class SolverFactoryConfigured {
 
-        public SolverFactory<CloudBalance> solverFactoryCS;
+        public SolverFactory<CloudBalance> solverFactoryCs;
         public SolverFactory<CloudBalance> solverFactoryDrl;
 
-        @Param({"5", "10"})
+        @Param({"10", "100", "500", "1000"})
         public int iterations;
 
         @Setup
         public void setupFactory() {
-            solverFactoryCS = SolverFactory.createFromXmlResource("solver/cloudBalancingSolverCSConfig.xml");
+            solverFactoryCs = SolverFactory.createFromXmlResource("solver/cloudBalancingSolverCSConfig.xml");
             solverFactoryDrl = SolverFactory.createFromXmlResource("solver/cloudBalancingSolverConfig.xml");
         }
     }
