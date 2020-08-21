@@ -20,7 +20,7 @@ import org.optaplanner.core.api.solver.SolverFactory;
 @BenchmarkMode(Mode.AverageTime)
 @Warmup(iterations = 10)
 @Measurement(iterations = 10)
-public class BenchmarkRunner {
+public class BuildSolverBenchmark {
 
     public static void main(String[] args) throws IOException {
         org.openjdk.jmh.Main.main(args);

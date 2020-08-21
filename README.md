@@ -12,7 +12,7 @@ that creates the load itself. Build the project with:
 
 Then execute the benchmark
 
-`java -jar target/benchmarks.jar`
+`java -jar target/cloud-balancing-solver-benchmark-1.0-SNAPSHOT-jar-with-dependencies.jar`
 
 - **buildSolverFactoryCs** benchmark of solution build on factory that used configuration for Constraint Stream provider class
 - **buildSolverFactoryDrl** benchmark of solution build on factory that used configuration for Drl 
