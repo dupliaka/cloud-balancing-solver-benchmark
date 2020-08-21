@@ -8,11 +8,11 @@ Before running the benchmark make sure you build it,
 it is better to avoid side numbers of measuring work of cycles 
 that creates the load itself. Build the project with:
  
-` mvn clean install -DskipTests`
+`mvn clean install -DskipTests`
 
 Then execute the benchmark
 
-`java -jar target/cloud-balancing-solver-benchmark-1.0-SNAPSHOT-jar-with-dependencies.jar`
+`java -jar target/cloud-balancing-solver-benchmarks.jar`
 
 - **buildSolverFactoryCs** benchmark of solution build on factory that used configuration for Constraint Stream provider class
 - **buildSolverFactoryDrl** benchmark of solution build on factory that used configuration for Drl 
