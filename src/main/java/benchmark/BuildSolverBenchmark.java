@@ -9,9 +9,10 @@ import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Fork;
 import org.openjdk.jmh.annotations.Measurement;
 import org.openjdk.jmh.annotations.Mode;
-import org.openjdk.jmh.annotations.OperationsPerInvocation;
 import org.openjdk.jmh.annotations.OutputTimeUnit;
+import org.openjdk.jmh.annotations.Param;
 import org.openjdk.jmh.annotations.Scope;
+import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.annotations.Warmup;
 import org.openjdk.jmh.infra.Blackhole;
@@ -20,83 +21,45 @@ import org.optaplanner.core.api.solver.SolverFactory;
 import domain.CloudBalance;
 
 @BenchmarkMode(Mode.AverageTime)
-@Fork(value = 2, warmups = 5)
-@Warmup(iterations = 7)
-@Measurement(iterations = 5)
+@Warmup(iterations = 3)
+@Measurement(iterations = 10)
+@Fork(value = 2, warmups = 7,jvmArgs = { "-Xms20g", "-Xmx20g"})
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
-@State(Scope.Thread)
+@State(Scope.Benchmark)
 public class BuildSolverBenchmark {
 
-    private SolverFactory<CloudBalance> solverFactoryCs =
-            SolverFactory.createFromXmlResource("solver/cloudBalancingSolverCSConfig.xml");
-    private SolverFactory<CloudBalance> solverFactoryDrl =
-            SolverFactory.createFromXmlResource("solver/cloudBalancingSolverConfig.xml");
+    @Param({ "1", "2", "5", "10", "100", "1000" })
+    int iterations;
+
+    SolverFactory<CloudBalance> solverFactoryCs;
+    SolverFactory<CloudBalance> solverFactoryDrl;
 
     public static void main(String[] args) throws IOException {
         org.openjdk.jmh.Main.main(args);
     }
 
-    public Object buildSolverFactoryCs(int iterations) {
+    @Setup
+    public void setupFactory() {
+
+        solverFactoryCs = SolverFactory.createFromXmlResource("solver/cloudBalancingSolverCSConfig.xml");
+        solverFactoryDrl = SolverFactory.createFromXmlResource("solver/cloudBalancingSolverConfig.xml");
+    }
+
+    @Benchmark
+    public Object buildSolverFactoryCsMeasure(BuildSolverBenchmark buildSolverBenchmark, Blackhole blackhole) {
         Stream
                 .iterate(0, i -> i + 1)
-                .limit(iterations)
-                .forEach(i -> solverFactoryCs.buildSolver());
+                .limit(buildSolverBenchmark.iterations)
+                .forEach(i -> blackhole.consume(buildSolverBenchmark.solverFactoryCs.buildSolver()));
         return new Object();
     }
 
-    public Object buildSolverFactoryDrl( int iterations) {
+    @Benchmark
+    public Object buildSolverFactoryDrlMeasure(BuildSolverBenchmark buildSolverBenchmark,Blackhole blackhole) {
         Stream
                 .iterate(0, i -> i + 1)
-                .limit(iterations)
-                .forEach(i -> solverFactoryDrl.buildSolver());
+                .limit(buildSolverBenchmark.iterations)
+                .forEach(i -> blackhole.consume(buildSolverBenchmark.solverFactoryDrl.buildSolver()));
         return new Object();
     }
-    @Benchmark
-    @OperationsPerInvocation(10)
-    public void buildSolverFactoryCsMeasure_10(Blackhole blackhole) {
-        blackhole.consume( buildSolverFactoryCs(10));
-    }
-
-    @Benchmark
-    @OperationsPerInvocation(10)
-    public void buildSolverFactoryDrlMeasure_10(Blackhole blackhole) {
-        blackhole.consume( buildSolverFactoryDrl(10));
-    }
-
-    @Benchmark
-    @OperationsPerInvocation(100)
-    public void buildSolverFactoryCsMeasure_100(Blackhole blackhole) {
-        blackhole.consume( buildSolverFactoryCs(100));
-    }
-
-    @Benchmark
-    @OperationsPerInvocation(100)
-    public void buildSolverFactoryDrlMeasure_100(Blackhole blackhole) {
-        blackhole.consume( buildSolverFactoryDrl(100));
-    }
-
-    @Benchmark
-    @OperationsPerInvocation(500)
-    public void buildSolverFactoryCsMeasure_500(Blackhole blackhole) {
-        blackhole.consume( buildSolverFactoryCs(500));
-    }
-
-    @Benchmark
-    @OperationsPerInvocation(500)
-    public void buildSolverFactoryDrlMeasure_500(Blackhole blackhole) {
-        blackhole.consume( buildSolverFactoryDrl(500));
-    }
-
-    @Benchmark
-    @OperationsPerInvocation(1000)
-    public void buildSolverFactoryCsMeasure_1000(Blackhole blackhole) {
-        blackhole.consume( buildSolverFactoryCs(1000));
-    }
-
-    @Benchmark
-    @OperationsPerInvocation(1000)
-    public void buildSolverFactoryDrlMeasure_1000(Blackhole blackhole) {
-        blackhole.consume( buildSolverFactoryDrl(1000));
-    }
-
 }
