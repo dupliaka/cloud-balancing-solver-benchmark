@@ -8,7 +8,7 @@ Before running the benchmark make sure you build it,
 it is better to avoid side numbers of measuring work of cycles 
 that creates the load itself. Build the project with:
  
-`mvn clean install -DskipTests`
+`mvn clean install -DskipTests -Dversion.org.optaplanner=7.39.0.Final`
 
 Then execute the benchmark
 
